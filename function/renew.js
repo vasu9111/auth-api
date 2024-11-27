@@ -1,7 +1,6 @@
 import user from "../schema/userMdl.js";
 import jwt from "jsonwebtoken";
-const refresh_key = "test";
-const access_key = "test";
+const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
 
 const renewAccessToken = async (req, res, next) => {
   // const incomingRefreshToken = req.session.refreshtoken;
@@ -35,7 +34,7 @@ const renewAccessToken = async (req, res, next) => {
     }
 
     const accesstoken = jwt.sign({ _id: userFind._id }, access_key, {
-      expiresIn: "15m",
+      expiresIn: ACCESS_TOKEN_KEY,
     });
 
     req.session.accesstoken = accesstoken;
