@@ -1,0 +1,51 @@
+--> register : http://192.168.1.5:4000/api/registration/add
+method: POST 
+body:- 
+       name : test1
+       email: test1@gmail.com	
+       password: test1234
+response : 
+	{
+    "_id": "673ec9faa19bcffa64c7a9ac",
+    "name": "test1",
+    "email": "test1@gmail.com",
+    "password": "test1234",
+    "createdAt": "2024-11-21T05:49:46.221Z"
+}
+
+
+--> login : http://192.168.1.5:4000/api/login/auth
+method: POST 
+body:-
+       email: test1@gmail.com	
+       password: test1234
+response : 
+	{
+    "message": "Login successful"
+}
+
+
+
+
+--> logout : http://192.168.1.5:4000/api/logout
+
+method: POST 
+response : 
+	logout
+
+
+-->private route : http://192.168.1.5:4000/api/private
+method: GET 
+response : 
+	{
+    "message": "hello test1@gmail.com"
+}
+
+
+-->renew access token :  http://192.168.1.5:4000/api/refresh
+method: POST 
+
+response:
+{
+    "message": "Access token renewed successfully."
+}
