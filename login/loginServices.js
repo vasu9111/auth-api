@@ -1,8 +1,11 @@
 import user from "../schema/userMdl.js";
 import jwt from "jsonwebtoken";
 
-const ACCESS_TOKEN_KEY = "test";
-const REFRESH_TOKEN_KEY = "test";
+const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
+const REFRESH_TOKEN_KEY = process.env.REFRESH_TOKEN_KEY;
+const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
+const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY;
+
 const loginuser = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -17,11 +20,11 @@ const loginuser = async (req, res) => {
       return { message: "Invalid password" };
     }
     const accesstoken = jwt.sign({ _id: finduser._id }, ACCESS_TOKEN_KEY, {
-      expiresIn: "15m",
+      expiresIn: ACCESS_TOKEN_EXPIRY,
     });
 
     const refreshtoken = jwt.sign({ _id: finduser._id }, REFRESH_TOKEN_KEY, {
-      expiresIn: "7d",
+      expiresIn: REFRESH_TOKEN_EXPIRY,
     });
     finduser.refreshtoken = refreshtoken;
     await finduser.save();
@@ -34,7 +37,7 @@ const loginuser = async (req, res) => {
       refreshtoken: refreshtoken,
     };
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    return { error: err.message };
   }
 };
 

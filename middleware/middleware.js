@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const access_key = "test";
+const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
 
 const verify = (req, res, next) => {
   // const token = req.session.accesstoken;
@@ -14,7 +14,7 @@ const verify = (req, res, next) => {
     return res.status(400).json({ error: "access denied. please login" });
   }
   try {
-    const decoded = jwt.verify(token, access_key);
+    const decoded = jwt.verify(token, ACCESS_TOKEN_KEY);
 
     req.user = decoded._id;
 

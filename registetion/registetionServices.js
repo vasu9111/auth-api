@@ -1,7 +1,9 @@
 import user from "../schema/userMdl.js";
 import jwt from "jsonwebtoken";
-const ACCESS_TOKEN_KEY = "test";
-const REFRESH_TOKEN_KEY = "test";
+const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
+const REFRESH_TOKEN_KEY = process.env.REFRESH_TOKEN_KEY;
+const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
+const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY;
 
 // Add user
 const postuser = async (req, res) => {
@@ -18,11 +20,11 @@ const postuser = async (req, res) => {
   const useradd = await newuser.save();
 
   const accesstoken = jwt.sign({ _id: useradd._id }, ACCESS_TOKEN_KEY, {
-    expiresIn: "15m",
+    expiresIn: ACCESS_TOKEN_EXPIRY,
   });
 
   const refreshtoken = jwt.sign({ _id: useradd._id }, REFRESH_TOKEN_KEY, {
-    expiresIn: "7d",
+    expiresIn: REFRESH_TOKEN_EXPIRY,
   });
 
   useradd.refreshtoken = refreshtoken;

@@ -3,12 +3,22 @@ import mongoose from "mongoose";
 import router from "./indexRoutes.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
-const DB_URL = "mongodb://localhost:27017/jwt";
+
+const PORT = process.env.PORT;
+const DB_URL = process.env.DB_URL;
 const app = express();
 
 app.use(express.json());
 
-mongoose.connect(DB_URL).then(() => console.log("database Connected"));
+mongoose
+  .connect(DB_URL)
+  .then(() => {
+    console.log(`Database Connected`);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
+
 app.use(
   session({
     secret: "1234",
@@ -19,5 +29,4 @@ app.use(
 );
 app.use(cookieParser());
 app.use("/", router);
-
-app.listen(4000, () => console.log("server runing 4000"));
+app.listen(PORT, () => console.log(`server running on port ${PORT}`));
