@@ -1,4 +1,4 @@
-import user from "../schema/userMdl.js";
+import user from "../../schema/userMdl.js";
 import jwt from "jsonwebtoken";
 
 const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
@@ -16,7 +16,6 @@ const loginuser = async (req, res) => {
       const error = new Error("Invalid credentials");
       error.status = 400;
       throw error;
-    } else {
     }
 
     if (password !== finduser.password) {
@@ -24,7 +23,6 @@ const loginuser = async (req, res) => {
       error.status = 400;
       throw error;
     }
-
     const accesstoken = jwt.sign({ _id: finduser._id }, ACCESS_TOKEN_KEY, {
       expiresIn: ACCESS_TOKEN_EXPIRY,
     });
@@ -47,7 +45,18 @@ const loginuser = async (req, res) => {
     throw error;
   }
 };
-
+const logoutuser = async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      const error = new Error("error in logout");
+      error.status = 400;
+      throw error;
+    }
+  });
+  res.clearCookie("connect.sid");
+  res.status(200).send({ message: "logout" });
+};
 export default {
   loginuser,
+  logoutuser,
 };

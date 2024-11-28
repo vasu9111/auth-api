@@ -1,4 +1,4 @@
-import user from "../schema/userMdl.js";
+import user from "../../schema/userMdl.js";
 import jwt from "jsonwebtoken";
 const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
 const REFRESH_TOKEN_KEY = process.env.REFRESH_TOKEN_KEY;

@@ -1,6 +1,6 @@
 import express from "express";
 import registetionControllers from "./registetionControllers.js";
-import registetioncoustommiddleware from "../middleware/registetioncoustommiddleware.js";
+import registetioncoustommiddleware from "../../middleware/registetioncoustommiddleware.js";
 
 const router = express.Router();
 

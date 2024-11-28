@@ -21,8 +21,10 @@ const verify = (req, res, next) => {
     req.user = decoded._id;
 
     next();
-  } catch (error) {
-    return res.status(401).send("invelid token");
+  } catch (err) {
+    const error = new Error("invalid token");
+    error.status = 400;
+    throw error;
   }
 };
 
