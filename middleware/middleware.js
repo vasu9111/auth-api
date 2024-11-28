@@ -11,7 +11,9 @@ const verify = (req, res, next) => {
   }
 
   if (!token && token !== req.session.accesstoken) {
-    return res.status(400).json({ error: "access denied. please login" });
+    const error = new Error("access denied. please login");
+    error.status = 400;
+    throw error;
   }
   try {
     const decoded = jwt.verify(token, ACCESS_TOKEN_KEY);
