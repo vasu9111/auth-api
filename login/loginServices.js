@@ -13,12 +13,18 @@ const loginuser = async (req, res) => {
     const finduser = await user.findOne({ email });
 
     if (!finduser) {
-      return { message: "Invalid credentials" };
+      const error = new Error("Invalid credentials");
+      error.status = 400;
+      throw error;
+    } else {
     }
 
     if (password !== finduser.password) {
-      return { message: "Invalid password" };
+      const error = new Error("Invalid password");
+      error.status = 400;
+      throw error;
     }
+
     const accesstoken = jwt.sign({ _id: finduser._id }, ACCESS_TOKEN_KEY, {
       expiresIn: ACCESS_TOKEN_EXPIRY,
     });
@@ -37,7 +43,8 @@ const loginuser = async (req, res) => {
       refreshtoken: refreshtoken,
     };
   } catch (err) {
-    return { error: err.message };
+    const error = new Error(err.message);
+    throw error;
   }
 };
 
