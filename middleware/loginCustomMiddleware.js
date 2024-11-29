@@ -1,14 +1,14 @@
 import user from "../schema/userMdl.js";
+const emailExistingCheck = async (email) => {
+  const countEmailExisting = await user.countDocuments({ email });
+
+  if (countEmailExisting > 0) {
+    return true;
+  }
+  return false;
+};
+
 const loginValidation = async (req, res, next) => {
-  const emailExistingCheck = async (email) => {
-    const countEmailExisting = await user.countDocuments({ email });
-
-    if (countEmailExisting > 0) {
-      return true;
-    }
-    return false;
-  };
-
   const { email, password } = req.body;
 
   if (!email) {

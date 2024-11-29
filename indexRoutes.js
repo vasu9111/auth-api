@@ -1,15 +1,14 @@
 import loginRouter from "./auth/login/loginRouter.js";
-import registetion from "./auth/registetion/registetionRouter.js";
-import middleware from "./middleware/middleware.js";
-import renewToken from "./function/renewToken.js";
+import registration from "./auth/registration/registrationRouter.js";
+
 import express from "express";
-import user from "./schema/userMdl.js";
+
 import pageRouter from "./privatePage/pageRoute.js";
 
 const router = express.Router();
 
-router.use("/api", loginRouter);
-router.use("/api/registration", registetion);
+router.use("/api/login", loginRouter);
+router.use("/api/registration", registration);
 router.use("/api/private", pageRouter);
 
 export default router;

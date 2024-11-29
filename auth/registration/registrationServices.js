@@ -13,7 +13,7 @@ const emailExistingCheck = async (email) => {
   return false;
 };
 // Add user
-const postuser = async (req, res) => {
+const userRegister = async (req, res) => {
   const { name, email, password } = req.body;
   try {
     const emailCheck = await emailExistingCheck(email);
@@ -23,33 +23,33 @@ const postuser = async (req, res) => {
       throw error;
     }
     // Create new user
-    const newuser = new user({
+    const newUser = new user({
       name,
       email,
       password,
       createdAt: new Date(),
     });
 
-    const useradd = await newuser.save();
+    const userAdd = await newUser.save();
 
-    const accesstoken = jwt.sign({ _id: useradd._id }, ACCESS_TOKEN_KEY, {
+    const accessToken = jwt.sign({ _id: userAdd._id }, ACCESS_TOKEN_KEY, {
       expiresIn: ACCESS_TOKEN_EXPIRY,
     });
 
-    const refreshtoken = jwt.sign({ _id: useradd._id }, REFRESH_TOKEN_KEY, {
+    const refreshToken = jwt.sign({ _id: userAdd._id }, REFRESH_TOKEN_KEY, {
       expiresIn: REFRESH_TOKEN_EXPIRY,
     });
 
-    useradd.refreshtoken = refreshtoken;
-    await useradd.save();
-    req.session.accesstoken = accesstoken;
-    req.session.refreshtoken = refreshtoken;
+    userAdd.refreshToken = refreshToken;
+    await userAdd.save();
+    req.session.accessToken = accessToken;
+    req.session.refreshToken = refreshToken;
     const result = {
-      _id: useradd._id,
-      name: useradd.name,
-      email: useradd.email,
-      password: useradd.password,
-      createdAt: useradd.createdAt,
+      _id: userAdd._id,
+      name: userAdd.name,
+      email: userAdd.email,
+      password: userAdd.password,
+      createdAt: userAdd.createdAt,
     };
 
     return result;
@@ -59,5 +59,5 @@ const postuser = async (req, res) => {
   }
 };
 export default {
-  postuser,
+  userRegister,
 };

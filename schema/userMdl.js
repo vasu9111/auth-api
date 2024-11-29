@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
     },
     password: { type: String, required: [true, "password is required."] },
     createdAt: { type: Date },
-    refreshtoken: { type: String },
+    refreshToken: { type: String },
   },
   { versionKey: false }
 );

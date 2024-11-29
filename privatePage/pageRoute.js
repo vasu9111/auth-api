@@ -4,9 +4,9 @@ import express from "express";
 const router = express.Router();
 
 router.get("/", middleware.verify, async (req, res) => {
-  const finduser = await user.findOne({ _id: req.user });
+  const foundUser = await user.findOne({ _id: req.user });
 
-  res.status(200).json({ message: `hello ${finduser.email} login` });
+  res.status(200).json({ message: `hello ${foundUser.email} login` });
 });
 
 export default router;

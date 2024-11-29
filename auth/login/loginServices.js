@@ -6,46 +6,46 @@ const REFRESH_TOKEN_KEY = process.env.REFRESH_TOKEN_KEY;
 const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
 const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY;
 
-const loginuser = async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     // Find user by username
-    const finduser = await user.findOne({ email });
+    const findUser = await user.findOne({ email });
 
-    if (!finduser) {
+    if (!findUser) {
       const error = new Error("Invalid credentials");
       error.status = 400;
       throw error;
     }
 
-    if (password !== finduser.password) {
+    if (password !== findUser.password) {
       const error = new Error("Invalid password");
       error.status = 400;
       throw error;
     }
-    const accesstoken = jwt.sign({ _id: finduser._id }, ACCESS_TOKEN_KEY, {
+    const accessToken = jwt.sign({ _id: findUser._id }, ACCESS_TOKEN_KEY, {
       expiresIn: ACCESS_TOKEN_EXPIRY,
     });
 
-    const refreshtoken = jwt.sign({ _id: finduser._id }, REFRESH_TOKEN_KEY, {
+    const refreshToken = jwt.sign({ _id: findUser._id }, REFRESH_TOKEN_KEY, {
       expiresIn: REFRESH_TOKEN_EXPIRY,
     });
-    finduser.refreshtoken = refreshtoken;
-    await finduser.save();
-    req.session.accesstoken = accesstoken;
-    req.session.refreshtoken = refreshtoken;
+    findUser.refreshToken = refreshToken;
+    await findUser.save();
+    req.session.accessToken = accessToken;
+    req.session.refreshToken = refreshToken;
 
     return {
       message: "Login successful",
-      accesstoken: accesstoken,
-      refreshtoken: refreshtoken,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     };
   } catch (err) {
     const error = new Error(err.message);
     throw error;
   }
 };
-const logoutuser = async (req, res) => {
+const logoutUser = async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       const error = new Error("error in logout");
@@ -57,6 +57,6 @@ const logoutuser = async (req, res) => {
   res.status(200).send({ message: "logout" });
 };
 export default {
-  loginuser,
-  logoutuser,
+  loginUser,
+  logoutUser,
 };
