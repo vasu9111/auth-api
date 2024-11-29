@@ -23,30 +23,30 @@ const renewAccessToken = async (req, res, next) => {
     const decoded = jwt.verify(incomingRefreshToken, REFRESH_TOKEN_KEY);
     console.log(decoded);
 
-    const userFind = await user.findOne({ _id: decoded._id });
+    const foundUser = await user.findOne({ _id: decoded._id });
 
-    if (!userFind) {
+    if (!foundUser) {
       const error = new Error("INVALID REFRESH TOKEN");
       error.status = 404;
       return next(error);
     }
-    console.log(userFind);
+    console.log(foundUser);
 
-    if (incomingRefreshToken !== userFind.refreshtoken) {
+    if (incomingRefreshToken !== foundUser.refreshtoken) {
       const error = new Error("Refresh token is not same");
       error.status = 404;
       return next(error);
     }
 
-    const accesstoken = jwt.sign({ _id: userFind._id }, ACCESS_TOKEN_KEY, {
+    const accessToken = jwt.sign({ _id: foundUser._id }, ACCESS_TOKEN_KEY, {
       expiresIn: ACCESS_TOKEN_EXPIRY,
     });
-    console.log(accesstoken);
+    console.log(accessToken);
 
-    req.session.accesstoken = accesstoken;
+    req.session.accessToken = accessToken;
     return res.status(200).json({
       message: "Access token renewed successfully.",
-      accesstoken: accesstoken,
+      accessToken: accessToken,
     });
   } catch (err) {
     const error = new Error("Refresh token is expired or not accessible");

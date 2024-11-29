@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
-
+// import user from "../schema/userMdl";
 const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
 
 const verify = (req, res, next) => {
   // const token = req.session.accesstoken;
   let token;
-  const authtoken = req.headers["authorization"];
-  if (authtoken && authtoken.startsWith("Bearer ")) {
-    token = authtoken.split(" ")[1];
+  const authToken = req.headers["authorization"];
+  if (authToken && authToken.startsWith("Bearer ")) {
+    token = authToken.split(" ")[1];
   }
 
   if (!token && token !== req.session.accesstoken) {
@@ -28,6 +28,22 @@ const verify = (req, res, next) => {
   }
 };
 
+const validate = (schema) => {
+  return async (req, res, next) => {
+    try {
+      await schema.validateAsync(req.body, { abortEarly: false });
+      next();
+    } catch (error) {
+      const errorMessage = [];
+      for (let detail of error.details) {
+        errorMessage.push(detail.message);
+      }
+      res.status(400).json({ error: errorMessage });
+    }
+  };
+};
+
 export default {
   verify,
+  validate,
 };
