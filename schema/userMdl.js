@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: [true, "Name is required."] },
+    name: { type: String, required: [true, "Name is required (from db)."] },
     email: {
       type: String,
       required: [true, "Email ID is required."],
@@ -14,6 +14,6 @@ const userSchema = new mongoose.Schema(
   },
   { versionKey: false }
 );
-const user = mongoose.model("users", userSchema);
+const userMdl = mongoose.model("users", userSchema);
 
-export default user;
+export default userMdl;

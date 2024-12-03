@@ -1,20 +1,20 @@
 import express from "express";
 import loginControllers from "./loginControllers.js";
-import loginCustomMiddleware from "../../middleware/loginCustomMiddleware.js";
+import loginCustomValidation from "./login.customValidation.js";
+import loginValidation from "./login.validation.js";
 import middleware from "../../middleware/middleware.js";
 import renewToken from "../../function/renewToken.js";
-import joiSchema from "../../schema/joiSchema.js";
 const router = express.Router();
 
 router.post(
   "/custom-validation",
-  loginCustomMiddleware.loginValidation,
+  loginCustomValidation.loginCustomValidation,
   loginControllers.loginUser
 );
 
 router.post(
   "/joi-validation",
-  middleware.validate(joiSchema.userLoginSchema),
+  middleware.validate(loginValidation.loginUser),
   loginControllers.loginUser
 );
 router.post("/logout", middleware.verify, loginControllers.logoutUser);

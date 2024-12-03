@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-// import user from "../schema/userMdl";
-const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
+import config from "../config.js";
 
+const { accessTokenKey } = config.jwt;
 const verify = (req, res, next) => {
   // const token = req.session.accesstoken;
   let token;
@@ -16,7 +16,7 @@ const verify = (req, res, next) => {
     throw error;
   }
   try {
-    const decoded = jwt.verify(token, ACCESS_TOKEN_KEY);
+    const decoded = jwt.verify(token, accessTokenKey);
 
     req.user = decoded._id;
 

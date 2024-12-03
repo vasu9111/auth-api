@@ -1,15 +1,15 @@
-import user from "../schema/userMdl.js";
+import userMdl from "../../schema/userMdl.js";
 
-const registrationValidation = async (req, res, next) => {
-  const emailExistingCheck = async (email) => {
-    const countEmailExisting = await user.countDocuments({ email });
+const userExistingCheck = async (email) => {
+  const countEmailExisting = await userMdl.countDocuments({ email });
 
-    if (countEmailExisting > 0) {
-      return true;
-    }
-    return false;
-  };
+  if (countEmailExisting > 0) {
+    return true;
+  }
+  return false;
+};
 
+const registationCustomValidation = async (req, res, next) => {
   const { name, email, password } = req.body;
   if (!name) {
     const error = new Error("name must be require");
@@ -29,9 +29,9 @@ const registrationValidation = async (req, res, next) => {
     error.status = 400;
     return next(error);
   } else {
-    const emailCheck = await emailExistingCheck(email);
+    const emailCheck = await userExistingCheck(email);
     if (emailCheck) {
-      const error = new Error("user already exist");
+      const error = new Error("email already exist");
       error.status = 400;
       return next(error);
     }
@@ -49,5 +49,5 @@ const registrationValidation = async (req, res, next) => {
   next();
 };
 export default {
-  registrationValidation,
+  registationCustomValidation,
 };

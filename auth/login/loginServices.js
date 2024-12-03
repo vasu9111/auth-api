@@ -1,16 +1,18 @@
-import user from "../../schema/userMdl.js";
+import userMdl from "../../schema/userMdl.js";
 import jwt from "jsonwebtoken";
+import config from "../../config.js";
+const {
+  accessTokenKey,
+  refreshTokenKey,
+  accessTokenExpiry,
+  refreshTokenExpiry,
+} = config.jwt;
 
-const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
-const REFRESH_TOKEN_KEY = process.env.REFRESH_TOKEN_KEY;
-const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
-const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY;
-
-const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+const loginUser = async (reqBody) => {
+  const { email, password } = reqBody;
   try {
     // Find user by username
-    const findUser = await user.findOne({ email });
+    const findUser = await userMdl.findOne({ email });
 
     if (!findUser) {
       const error = new Error("Invalid credentials");
@@ -23,20 +25,17 @@ const loginUser = async (req, res) => {
       error.status = 400;
       throw error;
     }
-    const accessToken = jwt.sign({ _id: findUser._id }, ACCESS_TOKEN_KEY, {
-      expiresIn: ACCESS_TOKEN_EXPIRY,
+    const accessToken = jwt.sign({ _id: findUser._id }, accessTokenKey, {
+      expiresIn: accessTokenExpiry,
     });
 
-    const refreshToken = jwt.sign({ _id: findUser._id }, REFRESH_TOKEN_KEY, {
-      expiresIn: REFRESH_TOKEN_EXPIRY,
+    const refreshToken = jwt.sign({ _id: findUser._id }, refreshTokenKey, {
+      expiresIn: refreshTokenExpiry,
     });
     findUser.refreshToken = refreshToken;
     await findUser.save();
-    req.session.accessToken = accessToken;
-    req.session.refreshToken = refreshToken;
 
     return {
-      message: "Login successful",
       accessToken: accessToken,
       refreshToken: refreshToken,
     };

@@ -10,5 +10,6 @@ const router = express.Router();
 router.use("/api/login", loginRouter);
 router.use("/api/registration", registration);
 router.use("/api/private", pageRouter);
+router.use("/api", loginRouter);
 
 export default router;
