@@ -1,18 +1,16 @@
 import registrationServices from "./registrationServices.js";
 
-const userRegistration = async (req, res, next) => {
+const registerUser = async (req, res, next) => {
   try {
-    const newRegistration = await registrationServices.userRegister(
-      req,
-      res,
-      next
-    );
-    res.status(200).json(newRegistration);
+    const tokenData = await registrationServices.userRegister(req.body);
+    req.session.accessToken = tokenData.accessToken;
+    req.session.refreshToken = tokenData.refreshToken;
+    res.status(200).json(tokenData);
   } catch (error) {
     next(error);
   }
 };
 
 export default {
-  userRegistration,
+  registerUser,
 };

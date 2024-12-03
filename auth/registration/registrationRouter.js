@@ -1,18 +1,18 @@
 import express from "express";
 import registrationControllers from "./registrationControllers.js";
-import registrationCustomMiddleware from "../../middleware/registrationCustomMiddleware.js";
+import registationCustomValidation from "./registation.customValidation.js";
+import registrationValidation from "./registration.validation.js";
 import middleware from "../../middleware/middleware.js";
-import joiSchema from "../../schema/joiSchema.js";
 const router = express.Router();
 
 router.post(
   "/custom-validation",
-  registrationCustomMiddleware.registrationValidation,
-  registrationControllers.userRegistration
+  registationCustomValidation.registationCustomValidation,
+  registrationControllers.registerUser
 );
 router.post(
   "/joi-validation",
-  middleware.validate(joiSchema.userRegisterSchema),
-  registrationControllers.userRegistration
+  middleware.validate(registrationValidation.registerUser),
+  registrationControllers.registerUser
 );
 export default router;

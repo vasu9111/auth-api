@@ -1,8 +1,10 @@
 import loginServices from "./loginServices.js";
 const loginUser = async (req, res, next) => {
   try {
-    const newlogin = await loginServices.loginUser(req, res);
-    res.status(200).json(newlogin);
+    const tokenData = await loginServices.loginUser(req.body);
+    req.session.accessToken = tokenData.accessToken;
+    req.session.refreshToken = tokenData.refreshToken;
+    res.status(200).json(tokenData);
   } catch (error) {
     next(error);
   }

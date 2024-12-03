@@ -1,6 +1,6 @@
-import user from "../schema/userMdl.js";
-const emailExistingCheck = async (email) => {
-  const countEmailExisting = await user.countDocuments({ email });
+import userMdl from "../../schema/userMdl.js";
+const userExistingCheck = async (email) => {
+  const countEmailExisting = await userMdl.countDocuments({ email });
 
   if (countEmailExisting > 0) {
     return true;
@@ -8,7 +8,7 @@ const emailExistingCheck = async (email) => {
   return false;
 };
 
-const loginValidation = async (req, res, next) => {
+const loginCustomValidation = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email) {
@@ -20,8 +20,8 @@ const loginValidation = async (req, res, next) => {
     error.status = 400;
     return next(error);
   } else {
-    const emailCheck = await emailExistingCheck(email);
-    if (!emailCheck) {
+    const userFound = await userExistingCheck(email);
+    if (!userFound) {
       const error = new Error("user not exist");
       error.status = 400;
       return next(error);
@@ -41,5 +41,5 @@ const loginValidation = async (req, res, next) => {
 };
 
 export default {
-  loginValidation,
+  loginCustomValidation,
 };

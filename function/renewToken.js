@@ -1,8 +1,11 @@
 import user from "../schema/userMdl.js";
 import jwt from "jsonwebtoken";
-const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
-const REFRESH_TOKEN_KEY = process.env.REFRESH_TOKEN_KEY;
-const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
+import config from "../config.js";
+// const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
+// const REFRESH_TOKEN_KEY = process.env.REFRESH_TOKEN_KEY;
+// const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
+
+const { accessTokenKey, refreshTokenKey, accessTokenExpiry } = config.jwt;
 
 const renewAccessToken = async (req, res, next) => {
   // const incomingRefreshToken = req.session.refreshtoken;
@@ -20,7 +23,7 @@ const renewAccessToken = async (req, res, next) => {
   console.log(incomingRefreshToken);
 
   try {
-    const decoded = jwt.verify(incomingRefreshToken, REFRESH_TOKEN_KEY);
+    const decoded = jwt.verify(incomingRefreshToken, refreshTokenKey);
     console.log(decoded);
 
     const foundUser = await user.findOne({ _id: decoded._id });
@@ -32,14 +35,14 @@ const renewAccessToken = async (req, res, next) => {
     }
     console.log(foundUser);
 
-    if (incomingRefreshToken !== foundUser.refreshtoken) {
+    if (incomingRefreshToken !== foundUser.refreshToken) {
       const error = new Error("Refresh token is not same");
       error.status = 404;
       return next(error);
     }
 
-    const accessToken = jwt.sign({ _id: foundUser._id }, ACCESS_TOKEN_KEY, {
-      expiresIn: ACCESS_TOKEN_EXPIRY,
+    const accessToken = jwt.sign({ _id: foundUser._id }, accessTokenKey, {
+      expiresIn: accessTokenExpiry,
     });
     console.log(accessToken);
 
