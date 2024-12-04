@@ -33,6 +33,9 @@ app.use(cookieParser());
 app.use("/", router);
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
-  res.status(statusCode).json({ error: err.message || "Server Error" });
+  res.status(statusCode).json({
+    code: err.code || "error unknown",
+    message: err.message || "Server Error",
+  });
 });
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
