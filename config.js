@@ -6,12 +6,12 @@ config({
 
 export default {
   port: process.env.PORT,
-  dbUrl: process.env.DB_URL,
+  dbUrl: process.env.MY_DB_URL,
   jwt: {
     accessTokenKey: process.env.ACCESS_TOKEN_KEY,
     refreshTokenKey: process.env.REFRESH_TOKEN_KEY,
     accessTokenExpiry: process.env.ACCESS_TOKEN_EXPIRY,
     refreshTokenExpiry: process.env.REFRESH_TOKEN_EXPIRY,
   },
-  sessionSecret: process.env.SESSION_SECRET,
+  sessionSecret: process.env.SESSION_KEY,
 };
