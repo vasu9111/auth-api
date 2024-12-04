@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
     },
     password: { type: String, required: [true, "password is required."] },
-    createdAt: { type: Date },
+    registeredAt: { type: Date },
     refreshToken: { type: String },
   },
   { versionKey: false }

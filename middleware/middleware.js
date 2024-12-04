@@ -3,14 +3,18 @@ import config from "../config.js";
 
 const { accessTokenKey } = config.jwt;
 const verify = (req, res, next) => {
-  // const token = req.session.accesstoken;
   let token;
   const authToken = req.headers["authorization"];
   if (authToken && authToken.startsWith("Bearer ")) {
     token = authToken.split(" ")[1];
   }
 
-  if (!token && token !== req.session.accesstoken) {
+  if (!token) {
+    const error = new Error("token not available");
+    error.status = 400;
+    throw error;
+  }
+  if (token !== req.session.accessToken) {
     const error = new Error("access denied. please login");
     error.status = 400;
     throw error;
