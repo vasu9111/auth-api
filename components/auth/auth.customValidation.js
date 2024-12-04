@@ -8,7 +8,39 @@ const userExistingCheck = async (email) => {
   }
   return false;
 };
+// login validation
+const loginCustomValidation = async (req, res, next) => {
+  const { email, password } = req.body;
+  if (!email) {
+    const error = new Error("email must be require");
+    error.status = 400;
+    return next(error);
+  } else if (!email.includes("@")) {
+    const error = new Error("email invalid");
+    error.status = 400;
+    return next(error);
+  } else {
+    const userFound = await userExistingCheck(email);
+    if (!userFound) {
+      const error = new Error("user not exist");
+      error.status = 400;
+      return next(error);
+    }
+  }
 
+  if (!password) {
+    const error = new Error("password must be require");
+    error.status = 400;
+    return next(error);
+  } else if (password.length < 6) {
+    const error = new Error("password length must be 6 digit long");
+    error.status = 400;
+    return next(error);
+  }
+  next();
+};
+
+// registation validation
 const registationCustomValidation = async (req, res, next) => {
   const { name, email, password } = req.body;
   if (!name) {
@@ -31,7 +63,7 @@ const registationCustomValidation = async (req, res, next) => {
   } else {
     const emailCheck = await userExistingCheck(email);
     if (emailCheck) {
-      const error = new Error("email already exist");
+      const error = new Error("user already exist");
       error.status = 400;
       return next(error);
     }
@@ -49,5 +81,6 @@ const registationCustomValidation = async (req, res, next) => {
   next();
 };
 export default {
+  loginCustomValidation,
   registationCustomValidation,
 };

@@ -1,9 +1,6 @@
 import user from "../schema/userMdl.js";
 import jwt from "jsonwebtoken";
 import config from "../config.js";
-// const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
-// const REFRESH_TOKEN_KEY = process.env.REFRESH_TOKEN_KEY;
-// const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
 
 const { accessTokenKey, refreshTokenKey, accessTokenExpiry } = config.jwt;
 
@@ -20,11 +17,9 @@ const renewAccessToken = async (req, res, next) => {
     error.status = 401;
     return next(error);
   }
-  console.log(incomingRefreshToken);
 
   try {
     const decoded = jwt.verify(incomingRefreshToken, refreshTokenKey);
-    console.log(decoded);
 
     const foundUser = await user.findOne({ _id: decoded._id });
 
@@ -33,7 +28,6 @@ const renewAccessToken = async (req, res, next) => {
       error.status = 404;
       return next(error);
     }
-    console.log(foundUser);
 
     if (incomingRefreshToken !== foundUser.refreshToken) {
       const error = new Error("Refresh token is not same");
@@ -44,7 +38,6 @@ const renewAccessToken = async (req, res, next) => {
     const accessToken = jwt.sign({ _id: foundUser._id }, accessTokenKey, {
       expiresIn: accessTokenExpiry,
     });
-    console.log(accessToken);
 
     req.session.accessToken = accessToken;
     return res.status(200).json({

@@ -1,15 +1,10 @@
-import loginRouter from "./auth/login/loginRouter.js";
-import registration from "./auth/registration/registrationRouter.js";
-
+import authRouter from "./components/auth/auth.route.js";
 import express from "express";
-
 import pageRouter from "./privatePage/pageRoute.js";
 
 const router = express.Router();
 
-router.use("/api/login", loginRouter);
-router.use("/api/registration", registration);
-router.use("/api/private", pageRouter);
-router.use("/api", loginRouter);
+router.use("/api/auth", authRouter);
+router.use("/api/page", pageRouter);
 
 export default router;

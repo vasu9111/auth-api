@@ -5,9 +5,9 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import envData from "./config.js";
 
-const PORT = process.env.PORT;
+const PORT = envData.port;
 console.log("envData.port", envData.port);
-const DB_URL = process.env.DB_URL;
+const DB_URL = envData.dbUrl;
 const app = express();
 
 app.use(express.json());
@@ -23,7 +23,7 @@ mongoose
 
 app.use(
   session({
-    secret: "7TDvew2EzG",
+    secret: envData.sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 },
