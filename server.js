@@ -7,13 +7,13 @@ import envData from "./config.js";
 
 const PORT = envData.port;
 console.log("envData.port", envData.port);
-const DB_URL = envData.dbUrl;
+const MY_DB_URL = envData.dbUrl;
 const app = express();
 
 app.use(express.json());
 
 mongoose
-  .connect(DB_URL)
+  .connect(MY_DB_URL)
   .then(() => {
     console.log(`Database Connected`);
   })
