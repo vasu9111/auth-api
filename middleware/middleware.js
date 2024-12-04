@@ -10,13 +10,15 @@ const verify = (req, res, next) => {
   }
 
   if (!token) {
-    const error = new Error("token not available");
-    error.status = 400;
+    const error = new Error("Token is not available");
+    error.code = "TOKEN_MISSING";
+    error.status = 401;
     throw error;
   }
   if (token !== req.session.accessToken) {
     const error = new Error("access denied. please login");
-    error.status = 400;
+    error.code = "ACCESS_DENIED";
+    error.status = 403;
     throw error;
   }
   try {
@@ -26,9 +28,10 @@ const verify = (req, res, next) => {
 
     next();
   } catch (err) {
-    const error = new Error("invalid token");
-    error.status = 400;
-    throw error;
+    const error = new Error(err.message);
+    error.code = err.code || "SERVER_ERROR";
+    error.status = err.status || 500;
+    return next(error);
   }
 };
 

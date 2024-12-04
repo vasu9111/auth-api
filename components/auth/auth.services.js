@@ -17,14 +17,16 @@ const loginUser = async (reqBody) => {
     const findUser = await userMdl.findOne({ email });
 
     if (!findUser) {
-      const error = new Error("Invalid credentials");
-      error.status = 400;
+      const error = new Error("User not found");
+      error.code = "USER_NOT_FOUND";
+      error.status = 404;
       throw error;
     }
 
     if (password !== findUser.password) {
       const error = new Error("Invalid password");
-      error.status = 400;
+      error.code = "INVALID_PASSWORD";
+      error.status = 401;
       throw error;
     }
     const accessToken = jwt.sign({ _id: findUser._id }, accessTokenKey, {
@@ -43,6 +45,8 @@ const loginUser = async (reqBody) => {
     };
   } catch (err) {
     const error = new Error(err.message);
+    error.code = err.code || "SERVER_ERROR";
+    error.status = err.status || 500;
     throw error;
   }
 };
@@ -50,7 +54,8 @@ const loginUser = async (reqBody) => {
 const logoutUser = async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      const error = new Error("error in logout");
+      const error = new Error("Somting went wrong during logout");
+      error.code = "ERR_LOGOUT";
       error.status = 400;
       throw error;
     }
@@ -75,7 +80,8 @@ const registerUser = async (reqBody) => {
     const emailCheck = await emailExistingCheck(email);
     if (emailCheck) {
       const error = new Error("user already exist");
-      error.status = 400;
+      error.code = "USER_EXIST";
+      error.status = 409;
       throw error;
     }
     // Create new user
@@ -110,6 +116,8 @@ const registerUser = async (reqBody) => {
     return { result, accessToken: accessToken, refreshToken: refreshToken };
   } catch (err) {
     const error = new Error(err.message);
+    error.code = err.code || "SERVER_ERROR";
+    error.status = err.status || 500;
     throw error;
   }
 };
