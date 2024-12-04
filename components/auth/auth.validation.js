@@ -1,4 +1,13 @@
 import Joi from "joi";
+const loginUser = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.email": "invalid email format",
+    "string.empty": "email is required",
+  }),
+  password: Joi.string().required().messages({
+    "string.empty": "password is required",
+  }),
+});
 
 const registerUser = Joi.object({
   name: Joi.string().min(2).max(15).required().messages({
@@ -17,7 +26,7 @@ const registerUser = Joi.object({
     "string.max": "password must be a max 10 characters",
   }),
 });
-
 export default {
+  loginUser,
   registerUser,
 };
