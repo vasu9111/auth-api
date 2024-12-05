@@ -1,34 +1,37 @@
 import express from "express";
-import authControllers from "./auth.controllers.js";
+import authController from "./auth.controller.js";
 import authCustomValidation from "./auth.customValidation.js";
 import authValidation from "./auth.validation.js";
 import middleware from "../../middleware/middleware.js";
-import renewToken from "../../function/renewToken.js";
+import authHelper from "../../helper/authHelper.js";
 const router = express.Router();
 // login Router
 router.post(
   "/login/custom-validation",
   authCustomValidation.loginCustomValidation,
-  authControllers.loginUser
+  authController.loginUser
 );
 
 router.post(
   "/login/joi-validation",
   middleware.validate(authValidation.loginUser),
-  authControllers.loginUser
+  authController.loginUser
 );
 
 // registation Router
 router.post(
   "/registration/custom-validation",
   authCustomValidation.registationCustomValidation,
-  authControllers.registerUser
+  authController.registerUser
 );
 router.post(
   "/registration/joi-validation",
   middleware.validate(authValidation.registerUser),
-  authControllers.registerUser
+  authController.registerUser
 );
-router.post("/logout", middleware.verify, authControllers.logoutUser);
-router.post("/refresh", renewToken.renewAccessToken);
+
+router.post("/registration/db-validation", authController.registerUser);
+
+router.post("/logout", middleware.verify, authController.logoutUser);
+router.post("/refresh", authHelper.renewAccessToken);
 export default router;

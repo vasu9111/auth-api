@@ -24,7 +24,7 @@ const verify = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, accessTokenKey);
 
-    req.user = decoded._id;
+    req.user = decoded;
 
     next();
   } catch (err) {
