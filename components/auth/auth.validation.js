@@ -18,10 +18,12 @@ const registerUser = Joi.object({
   }),
   email: Joi.string().email().required().messages({
     "string.email": "Invalid email valid format",
+    "any.required": "Email is required",
     "string.empty": "Email is required",
   }),
   password: Joi.string().min(6).max(10).required().messages({
-    "string.empty": "Password is required",
+    "string.empty": "Password can't be empty",
+    "any.required": "Password is required",
     "string.min": "Password must be a 6 min characters",
     "string.max": "Password must be a max 10 characters",
   }),
