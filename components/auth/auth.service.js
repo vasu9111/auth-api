@@ -52,6 +52,15 @@ const loginUser = async (reqBody) => {
 };
 
 const logoutUser = async (req, res) => {
+  const user = await userMdl.findOne({ _id: req.user._id });
+  if (!user) {
+    const error = new Error("User not found");
+    error.code = "ERR_NOT_FOUND";
+    error.status = 404;
+    throw error;
+  }
+  user.refreshToken = null;
+  await user.save();
   req.session.destroy((err) => {
     if (err) {
       const error = new Error("Somting went wrong during logout");
@@ -105,15 +114,17 @@ const registerUser = async (reqBody) => {
     userAdd.refreshToken = refreshToken;
     await userAdd.save();
 
-    const result = {
-      _id: userAdd._id,
+    const newUserDetail = {
       name: userAdd.name,
       email: userAdd.email,
-      password: userAdd.password,
       registeredAt: userAdd.registeredAt,
     };
 
-    return { result, accessToken: accessToken, refreshToken: refreshToken };
+    return {
+      newUserDetail,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
   } catch (err) {
     const error = new Error(err.message);
     error.code = err.code || "SERVER_ERROR";
