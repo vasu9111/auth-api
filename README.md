@@ -2,7 +2,7 @@
 
 # server
 
-> REST APIs build with express.js
+> Auth Api build with express.js
 
 # Getting Started
 
@@ -13,12 +13,12 @@
 
 # Install the required dependencies.
 
-npm i express
+npm i express mongoos nodemon jsonwebtoken joi express-session cookie-parser dotenv-safe cors
 
 # Update the scripts section in env package.json for development:
 
 "scripts": {
-"start": "nodemon --env-file=.env server.js"
+"start": "nodemon server.js"
 },
 
 # Running the Project
@@ -38,23 +38,42 @@ Run `http://localhost:4000/` in postman in postman
 # Endpoints :-
 
 - 1.  Registration page:-
-      Method: POST
-      URL: '/api/registration/custom-validation'
-      URL: '/api/registration/joi-validation'
+      registration Login user with different validation methods.
+      **Method: POST**
+      **URL:**
+      - `/api/auth/registration/custom-validation`
+      - `/api/auth/registration/joi-validation`
+      - `/api/auth/registration/db-validation`
+
+---
 
 - 2.  login page :-
-      Method: POST
-      URL: '/api/login/custom-validation'
-      URL: '/api/login/joi-validation'
+      Login user with different validation methods.
+      **Method: POST**
+      **URL:**
+      - `/api/auth/login/custom-validation`
+      - `/api/auth/login/joi-validation`
+
+---
 
 - 3.  logout :-
-      Method: GET
-      URL: 'api/logout'
+      Logout user
+      **Method: POST**
+      **URL:**
+      - `api/auth/logout`
+
+---
 
 - 4.  Private route:-
-      Method: GET
-      URL: '/api/private'
+      Access corent user exist check
+      **Method: GET**
+      **URL:**
+      - `/api/page/private`
+
+---
 
 - 5.  renew access token :-
-      Method: POST
-      URL: '/api/refresh'
+      Refresh token to access token renew
+      **Method: POST**
+      **URL:**
+      - `/api/auth/refresh`
