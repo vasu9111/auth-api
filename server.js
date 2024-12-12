@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import envData from "./config.js";
 import cors from "cors";
+import errorCodes from "./errorcode.js";
 const PORT = envData.port;
 console.log("envData.port", envData.port);
 const MY_DB_URL = envData.dbUrl;
@@ -37,10 +38,13 @@ app.use(
 app.use(cookieParser());
 app.use("/", router);
 app.use((err, req, res, next) => {
-  const statusCode = err.status || 500;
-  res.status(statusCode).json({
-    code: err.code || "error unknown",
-    message: err.message || "Server Error",
+  const errorCode = errorCodes[err.message];
+  if (errorCode) {
+    return res.status(errorCode.httpStatusCode).json(errorCode.body);
+  }
+  res.status(500).json({
+    code: err.code || "server_crashed",
+    message: err.message || "Server crashed",
   });
 });
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

@@ -10,15 +10,11 @@ const verify = (req, res, next) => {
   }
 
   if (!token) {
-    const error = new Error("Token is not available");
-    error.code = "TOKEN_MISSING";
-    error.status = 401;
+    const error = new Error("TOKEN_MISSING");
     throw error;
   }
   if (token !== req.session.accessToken) {
-    const error = new Error("access denied. please login");
-    error.code = "ACCESS_DENIED";
-    error.status = 403;
+    const error = new Error("ACCESS_DENIED");
     throw error;
   }
   try {

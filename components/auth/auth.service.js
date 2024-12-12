@@ -1,6 +1,16 @@
 import userMdl from "../../schema/userMdl.js";
 import jwt from "jsonwebtoken";
 import config from "../../config.js";
+
+import bcrypt from "bcrypt";
+const saltRounds = 10;
+const encryptPassword = (password) => {
+  const salt = bcrypt.genSaltSync(saltRounds);
+  return bcrypt.hashSync(password, salt);
+};
+const decryptPassword = (plain, hashed) => {
+  return bcrypt.compareSync(plain, hashed);
+};
 const {
   accessTokenKey,
   refreshTokenKey,
@@ -17,16 +27,12 @@ const loginUser = async (reqBody) => {
     const findUser = await userMdl.findOne({ email });
 
     if (!findUser) {
-      const error = new Error("User not found");
-      error.code = "USER_NOT_FOUND";
-      error.status = 404;
+      const error = new Error("USER_NOT_FOUND");
       throw error;
     }
 
-    if (password !== findUser.password) {
-      const error = new Error("Invalid password");
-      error.code = "INVALID_PASSWORD";
-      error.status = 401;
+    if (!decryptPassword(password, findUser.password)) {
+      const error = new Error("INVALID_PASSWORD");
       throw error;
     }
     const accessToken = jwt.sign({ _id: findUser._id }, accessTokenKey, {
@@ -54,9 +60,7 @@ const loginUser = async (reqBody) => {
 const logoutUser = async (req, res) => {
   const user = await userMdl.findOne({ _id: req.user._id });
   if (!user) {
-    const error = new Error("User not found");
-    error.code = "ERR_NOT_FOUND";
-    error.status = 404;
+    const error = new Error("USER_NOT_FOUND");
     throw error;
   }
   user.refreshToken = null;
@@ -88,16 +92,16 @@ const registerUser = async (reqBody) => {
   try {
     const emailCheck = await emailExistingCheck(email);
     if (emailCheck) {
-      const error = new Error("user already exist");
-      error.code = "USER_EXIST";
-      error.status = 409;
+      const error = new Error("USER_EXIST");
       throw error;
     }
+    // const hashedPassword = await bcrypt.hash(password, 5);
+    const hashPassword = encryptPassword(password);
     // Create new user
     const newUser = new userMdl({
       name,
       email,
-      password,
+      password: hashPassword,
       registeredAt: new Date(),
     });
 
@@ -140,4 +144,6 @@ export default {
   loginUser,
   logoutUser,
   registerUser,
+  encryptPassword,
+  decryptPassword,
 };
