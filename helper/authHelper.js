@@ -13,9 +13,7 @@ const renewAccessToken = async (req, res, next) => {
     incomingRefreshToken = authtoken.split(" ")[1];
   }
   if (!incomingRefreshToken) {
-    const error = new Error("Unauthorized request. Refresh token missing.");
-    error.code = "REFRESH_TOKEN_MISSING";
-    error.status = 401;
+    const error = new Error("REFRESH_TOKEN_MISSING");
     return next(error);
   }
 
@@ -25,16 +23,12 @@ const renewAccessToken = async (req, res, next) => {
     const foundUser = await user.findOne({ _id: decoded._id });
 
     if (!foundUser) {
-      const error = new Error("Invalid refrash token");
-      error.code = "INVALID_REFRESH_TOKEN";
-      error.status = 404;
+      const error = new Error("INVALID_REFRESH_TOKEN");
       return next(error);
     }
 
     if (incomingRefreshToken !== foundUser.refreshToken) {
-      const error = new Error("Refresh token expired");
-      error.code = "REFRESH_TOKEN_EXPIRED";
-      error.status = 404;
+      const error = new Error("REFRESH_TOKEN_EXPIRED");
       return next(error);
     }
 
@@ -48,6 +42,15 @@ const renewAccessToken = async (req, res, next) => {
       accessToken: accessToken,
     });
   } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      const error = new Error("REFRESH_TOKEN_EXPIRED");
+      return next(error);
+    }
+
+    if (err.name === "JsonWebTokenError") {
+      const error = new Error("TOKEN_INVALID");
+      return next(error);
+    }
     const error = new Error(err.message);
     error.code = err.code || "SERVER_ERROR";
     error.status = err.status || 500;
